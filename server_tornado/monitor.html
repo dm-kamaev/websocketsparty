@@ -1,0 +1,78 @@
+<head>
+    <style>
+        .mini-title {
+            width: 150px;
+            display: inline-block
+        }
+        pre {margin: 0}
+    </style>
+</head>
+<h2>Tornado Service</h2>
+<span class="mini-title">Porter 1C</span>{% if Porter_1C %}ON{% else %}OFF{% end %}<br/>
+<span class="mini-title">Check Ping</span>{% if Check_Ping %}ON{% else %}OFF{% end %}<br/>
+<span class="mini-title">Porter Django</span>{% if Porter_Django %}ON{% else %}OFF{% end %}<br/>
+<span class="mini-title">Client Asterisk</span>{% if clients.get('AstDom') %}ON{% else %}OFF{% end %}<br/>
+<h2>WS Client</h2>
+<h3>Authorized Clients</h3>
+{% if clients %}
+    {% for key in clients.keys() %}
+        <span>
+            <b> Client Data </b> {{ clients[key]['ClientData'] }}
+            <b> Params </b> {% for param in clients[key]['Params'] %} {{ param }} | {% end %}
+            <b> Client ID</b> {{ key }}
+        </span><br/>
+    {% end %}
+{% else %}
+    <span>Empty list</span>
+{% end %}
+<h3>No Authorized Clients</h3>
+{% if no_auth_clients %}
+    {% for key in no_auth_clients.keys() %}
+        <span>
+            <b> Client Data </b> {{ no_auth_clients[key]['ClientData'] }}
+            <b> RequestID </b> {{ no_auth_clients[key]['RequestID'] }}
+            <b> Client ID</b> {{ no_auth_clients[key]['Object'].id }}
+        </span><br/>
+    {% end %}
+{% else %}
+    <span>Empty list</span>
+{% end %}
+<h3>Groups</h3>
+{% if groups %}
+    {% for key in groups.keys() %}
+        <span>
+            <b>{{ key }}</b> {% for client_id in groups[key] %} | {{ clients[client_id]['ClientData'] }} {% end %}<br/>
+        </span>
+    {% end %}
+{% else %}
+    <span>Empty groups</span>
+{% end %}
+<h2>Asterisk Monitor</h2>
+{% try %}
+    <span class="mini-title">AMI Status:</span>{% if AMI %}ON{% else %}OFF{% end %}<br/>
+    <span class="mini-title">WS Status:</span>{% if WS %}ON{% else %}OFF{% end %}<br/>
+    <span class="mini-title">AGI Last Connection:</span>{{ AGI }}<br/>
+    <span class="mini-title">Count Extension:</span>{{ Extension_Count }}<br/>
+    <span class="mini-title">Count Trunk:</span>{{ Trunk_Count }}<br/>
+    <span class="mini-title">Count Channel:</span>{{ Channel_Count }}<br/>
+    <span class="mini-title">Count Bridge:</span>{{ Bridge_Count }}<br/>
+    <h3>Extension Map</h3>
+    {% for Extension in Extensions %}
+        <span>{{ Extension['Collection']}}</span>
+        <pre><span>{{ Extension['Channels']}}</span></pre>
+    {% end %}
+    <h3>Bridge Map</h3>
+    {% for Bridge in Bridges %}
+    <span>{{ Bridge['Collection']}}</span>
+    <pre><span>{{ Bridge['Channels']}}</span></pre>
+    {% end %}
+    <h3>Trunk Map</h3>
+    {% for Trunk in Trunks %}
+    <span>{{ Trunk }}</span></br>
+    {% end %}
+{% except %}
+    Don't connected
+{% end %}
+</span>
+</body>
+</html>
